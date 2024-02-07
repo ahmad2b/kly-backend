@@ -19,11 +19,11 @@ services:
       - DATABASE_HOST=ep-bold-wildflower-215811.ap-southeast-1.aws.neon.tech
       - DATABASE_NAME=kly
       - APP_NAME=Kly.lol
-      - SECRET_KEY="VT3BlbkFJmqaji32ruwrd43jmhb3s"
-      - ALGORITHM = "HS256"
-      - ACCESS_TOKEN_EXPIRE_MINUTES = 5
-      - REFRESH_TOKEN_EXPIRE_MINUTES = 10
-      - NEXT_PUBLIC_API_URL="https://www.kly.lol"
+      - SECRET_KEY=VT3BlbkFJmqaji32ruwrd43jmhb3s
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=5
+      - REFRESH_TOKEN_EXPIRE_MINUTES=10
+      - NEXT_PUBLIC_API_URL=https://www.kly.lol
       - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_bm9ybWFsLWVsZXBoYW50LTI5LmNsZXJrLmFjY291bnRzLmRldiQ
       - CLERK_SECRET_KEY=sk_test_d3xKchKtkMhzhUsZb2eBaN7smhC428bfXZl7djTu4h
       - CLERK_BACKEND_API_URL=https://api.clerk.com/v1
