@@ -1,0 +1,15 @@
+fastapi
+psycopg2-binary
+python-dotenv
+python-jose
+python-multipart
+requests
+SQLAlchemy
+sqlmodel
+starlette
+uvicorn[standard]
+google
+pydantic[email]
+pydantic
+pydantic_settings
+google-generativeai
