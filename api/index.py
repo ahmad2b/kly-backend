@@ -25,15 +25,11 @@ app = FastAPI(
         "email": "ahmadshaukat_4@outlook.com",
     },
     servers=[
-        # {
-        #     "url": "https://www.kly.lol",
-        #     "description": "Production server",
-        # },
         {
-            "url": "https://welcomed-teal-perfectly.ngrok-free.app",
-            "description": "Development server",
+            "url": "https://api.kly.lol",
+            "description": "Production server",
         },
-        {"url": "http://localhost:8000", "description": "Local Development server"},
+        {"url": "http://localhost:8000", "description": "Development server"},
     ],
     debug=True,
 )
