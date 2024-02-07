@@ -1,3 +1,5 @@
 build:
   docker:
-    web: docker/Dockerfile
+    web: Dockerfile
+run:
+  web: python api/index.py
