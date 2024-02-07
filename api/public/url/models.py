@@ -21,3 +21,11 @@ class URL(SQLModel, table=True):
 
     user_id: Optional[int] = Field(default=None, foreign_key="user.id")
     user: Optional["User"] = Relationship(back_populates="urls")
+
+
+class URLCreate(SQLModel):
+    url: str
+    user_id: Optional[int] = None
+    expires_at: Optional[datetime] = Field(
+        default_factory=lambda: datetime.utcnow() + timedelta(days=30)
+    )

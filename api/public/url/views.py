@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, HTTPException, status
 
 from api.utils.errors import Duplicate
 
-from api.public.url.models import URL
+from api.public.url.models import URL, URLCreate
 from api.public.url import url_service
 from api.utils.logger import logger_config
 from api.database import get_session
@@ -54,14 +54,14 @@ logger = logger_config(__name__)
 )
 async def create(
     db: Annotated[Session, Depends(get_session)],
-    url: URL,
-    current_user=Depends(get_current_user),
+    url: URLCreate,
+    # current_user=Depends(get_current_user),
 ) -> URL:
     logger.info("%s.create: %s", __name__, url)
     try:
         logger.info("Creating a new URL")
-        logger.info(f"current_user: {current_user}")
-        url.user_id = current_user
+        # logger.info(f"current_user: {current_user}")
+        # url.user_id = current_user
         logger.info(f"url: {url}")
         return url_service.create_url(db, url)
     except Duplicate as e:
