@@ -14,6 +14,8 @@ from api.utils.logger import logger_config
 from sqlmodel import Session
 from api.database import get_session
 
+from api.auth.model import Token, LoginResponse
+
 router = APIRouter()
 logger = logger_config(__name__)
 
@@ -57,7 +59,12 @@ async def create_user(user: UserCreate, db: Session = Depends(get_session)):
     return res
 
 
-@router.post("/signin", tags=["User"])
+@router.post(
+    "/signin",
+    tags=["User"],
+    status_code=status.HTTP_200_OK,
+    response_model=LoginResponse,
+)
 async def login(user: UserCreate, db: Session = Depends(get_session)):
     logger.info("%s.sign_in: %s", __name__, user)
     try:

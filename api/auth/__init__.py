@@ -142,11 +142,13 @@ class Clerk:
         logger.info(
             "Attempting to authenticate user with details: %s", user.email_address
         )
+
         data = {
             "strategy": "password",
-            "identifier": f"{user.username}",
+            "identifier": f"{user.email_address}",
             "password": f"{user.password}",
         }
+
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": f"Bearer {self.token}",
@@ -158,14 +160,16 @@ class Clerk:
                 headers=headers,
                 data=data,
             )
+
             response.raise_for_status()
+
         except requests.exceptions.HTTPError as http_err:
             logger.error(
                 f"HTTP {response.status_code} Error occurred during user authentication. Error message: {http_err}",
             )
             raise HTTPError(
                 response.status_code,
-                f"HTTP ({response.status_code}) Error occurred during user authentication. Error message: {http_err}",
+                f"HTTP ({response.status_code}) Error occurred during user authentication. Error message: {response.json()['errors'][0]['message']}",
             )
         except requests.exceptions.RequestException as err:
             logger.error(
@@ -176,6 +180,9 @@ class Clerk:
                 detail=f"Request Exception: An error occurred during the request: {err}",
             )
         except Exception as err:
+            logger.info(
+                f"Unexpected Exception: An unexpected error occurred: {response.json()} {err}"
+            )
             logger.error(f"Unexpected Exception: An unexpected error occurred: {err}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -185,7 +192,12 @@ class Clerk:
             logger.info("Successfully authenticated user.")
             data = response.json()
             jwt = self.fetch_jwt_token(data["client"]["sessions"][0]["id"])  # type: ignore
-            return jwt
+            return {
+                "token": jwt["jwt"],
+                "user_id": data["client"]["sessions"][0]["user"]["id"],
+                "username": data["client"]["sessions"][0]["user"]["username"],
+                "image_url": data["client"]["sessions"][0]["user"]["image_url"],
+            }
 
     def fetch_jwt_token(self, user_session: str):
         logger.info(f"Attempting to fetch JWT token for user session: {user_session}")
