@@ -402,7 +402,7 @@ def get_current_user_optional(
 
     if res.status_code == 200:
         user = res.json()
-        logger.info(f"Successfully retrieved current user with token", user)
+        logger.info(f"Successfully retrieved current user with token {user}")
         return user
     else:
         logger.error(f"Invalid authentication credentials")
