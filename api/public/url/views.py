@@ -58,6 +58,7 @@ async def create(
 ) -> URL:
     logger.info("%s.create: %s", __name__, url)
     try:
+        logger.info(f"Creating URL: {url} with token: {token}")
         if not token:
             logger.info(f"Token not found. Creating URL without user_id")
             updated_url = URLCreate(
@@ -67,7 +68,7 @@ async def create(
 
         logger.info(f"Token found. Creating URL with user_id: {token.user_id}")
         updated_url = URLCreate(
-            url=url.url, description=url.description, user_id=token.user_id
+            url=url.url, description=url.description, user_id=token.get("user_id")
         )
         return service.create(db, updated_url)
     except Duplicate as e:

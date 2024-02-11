@@ -393,7 +393,7 @@ def get_current_user_optional(
 ):
     if not token:
         return None
-    logger.info(f"Attempting to get current user with token")
+    logger.info(f"Attempting to get current user with token {token}")
 
     res = requests.get(
         "https://clerk.kly.lol/oauth/userinfo",
