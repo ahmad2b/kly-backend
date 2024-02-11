@@ -11,3 +11,4 @@ class LoginResponse(BaseModel):
     user_id: str
     username: str
     image_url: str
+    session_id: str

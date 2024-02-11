@@ -8,30 +8,35 @@ from pydantic import BaseModel, EmailStr
 from typing import TYPE_CHECKING
 
 
-if TYPE_CHECKING:
-    from api.public.url.models import URL
+# if TYPE_CHECKING:
+#     from api.public.url.models import URL
 
 
-class User(SQLModel, table=True):
-    id: Optional[str] = Field(
-        default=None,
-        primary_key=True,
-        nullable=False,
-    )
-    username: str = Field(nullable=False, index=True, unique=True)
-    email_address: str = Field(nullable=False, index=True, unique=True)
-    # hash_password: str = Field(nullable=False)
-    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
-    updated_at: Optional[datetime] = Field(default_factory=None)
-    deleted_at: Optional[datetime] = Field(default_factory=None)
+# class User(SQLModel, table=True):
+#     id: Optional[str] = Field(
+#         default=None,
+#         primary_key=True,
+#         nullable=False,
+#     )
+#     username: str = Field(nullable=False, index=True, unique=True)
+#     email_address: str = Field(nullable=False, index=True, unique=True)
+#     # hash_password: str = Field(nullable=False)
+#     created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+#     updated_at: Optional[datetime] = Field(default_factory=None)
+#     deleted_at: Optional[datetime] = Field(default_factory=None)
 
-    urls: List["URL"] = Relationship(back_populates="user")
+#     urls: List["URL"] = Relationship(back_populates="user")
 
 
 class UserCreate(SQLModel):
     email_address: EmailStr
     username: Annotated[str, Field(max_length=50, min_length=6)]
     password: Annotated[str, Field(max_length=50, min_length=8)]
+
+
+class UserCredentials(SQLModel):
+    userIdentifier: str = Field(..., alias="username_or_email")
+    password: str
 
 
 class PasswordHasher(Enum):

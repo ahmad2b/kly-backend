@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status, HTTPException, status
-from api.public.user.models import UserCreate, User
+from api.public.user.models import UserCreate, UserCredentials
 from api.public.user import user_service
 from api.utils.errors import (
     HTTPError,
@@ -15,6 +15,7 @@ from sqlmodel import Session
 from api.database import get_session
 
 from api.auth.model import Token, LoginResponse
+from api.auth import get_current_user
 
 router = APIRouter()
 logger = logger_config(__name__)
@@ -24,7 +25,6 @@ logger = logger_config(__name__)
     "",
     tags=["User"],
     status_code=status.HTTP_201_CREATED,
-    response_model=User,
 )
 async def create_user(user: UserCreate, db: Session = Depends(get_session)):
     logger.info("%s.create_user: %s", __name__, user)
@@ -60,15 +60,15 @@ async def create_user(user: UserCreate, db: Session = Depends(get_session)):
 
 
 @router.post(
-    "/signin",
+    "/login",
     tags=["User"],
     status_code=status.HTTP_200_OK,
     response_model=LoginResponse,
 )
-async def login(user: UserCreate, db: Session = Depends(get_session)):
+async def login(user: UserCredentials, db: Session = Depends(get_session)):
     logger.info("%s.sign_in: %s", __name__, user)
     try:
-        response = user_service.sign_in(db, user)
+        response = user_service.login(db, user)
     except BadRequest as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=f"Bad Request {e}"
@@ -97,3 +97,11 @@ async def login(user: UserCreate, db: Session = Depends(get_session)):
         )
     # response.set_cookie(key="token", value=response.jwt)
     return response
+
+
+# @router.post("/signout/{session_id}", tags=["User"], status_code=status.HTTP_200_OK)
+# async def signout(session_id: str, user_id=Depends(get_current_user)):
+#     logger.info("%s.sign_out: %s", __name__)
+#     res = user_service.session_end(session_id, user_id)
+
+#     return {"message": res}

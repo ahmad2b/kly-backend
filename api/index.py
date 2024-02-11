@@ -3,7 +3,7 @@ from starlette.responses import JSONResponse, RedirectResponse
 
 from api.public import api as public_api
 from api.utils.errors import NotFound
-from api.public.url import url_service
+from api.public.url import service
 from api.config import settings
 from api.utils.logger import logger_config
 
@@ -37,23 +37,6 @@ app = FastAPI(
 app.include_router(public_api)
 
 
-# API status
-@app.get(
-    "/api/status",
-    tags=["Status"],
-    summary="Status of API",
-    description="Status of API",
-    responses={
-        200: {
-            "description": "Status of API",
-            "content": {"application/json": {"example": {"status": "UP"}}},
-        }
-    },
-)
-def api_status():
-    return JSONResponse({"status": "UP"})
-
-
 # Redirect API
 @app.get(
     "/api/{short_url}",
@@ -77,7 +60,7 @@ def api_status():
 )
 async def redirect(short_url: str, db: Session = Depends(get_session)):
     try:
-        url = url_service.get_url(short_url, db=db)
+        url = service.get_url(short_url, db=db)
         if not url:
             raise NotFound(f"URL with short URL {short_url} not found")
         return RedirectResponse(url.url)

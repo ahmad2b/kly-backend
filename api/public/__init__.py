@@ -6,12 +6,12 @@ from api.public.url import views as url
 api = APIRouter()
 
 
-api.include_router(
-    user.router,
-    prefix="/api/users",
-    tags=["User"],
-    # dependencies=[Depends(authent)],
-)
+# api.include_router(
+#     user.router,
+#     prefix="/api/users",
+#     tags=["User"],
+#     # dependencies=[Depends(authent)],
+# )
 
 
 api.include_router(
