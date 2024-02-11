@@ -58,13 +58,14 @@ async def create(
 ) -> URL:
     logger.info("%s.create: %s", __name__, url)
     try:
-        logger.info(f"After validating Token: {token}")
         if not token:
+            logger.info(f"Token not found. Creating URL without user_id")
             updated_url = URLCreate(
                 url=url.url, description=url.description, user_id=url.user_id
             )
             return service.create(db, updated_url)
 
+        logger.info(f"Token found. Creating URL with user_id: {token.user_id}")
         updated_url = URLCreate(
             url=url.url, description=url.description, user_id=token.user_id
         )
