@@ -8,7 +8,7 @@ from api.utils.logger import logger_config
 from api.database import get_session
 from api.auth import get_current_user, get_current_user_optional
 from sqlmodel import Session
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Any
 
 router = APIRouter()
 logger = logger_config(__name__)
@@ -54,7 +54,7 @@ logger = logger_config(__name__)
 async def create(
     db: Annotated[Session, Depends(get_session)],
     url: URLCreate,
-    token: Annotated[str | None, Depends(get_current_user_optional)] = None,
+    token: Annotated[Any | None, Depends(get_current_user_optional)] = None,
 ) -> URL:
     logger.info("%s.create: %s", __name__, url)
     try:
@@ -63,7 +63,9 @@ async def create(
                 url=url.url, description=url.description, user_id=url.user_id
             )
             return service.create(db, updated_url)
-        updated_url = URLCreate(url=url.url, description=url.description, user_id=token)
+        updated_url = URLCreate(
+            url=url.url, description=url.description, user_id=token["user_id"]
+        )
         return service.create(db, updated_url)
     except Duplicate as e:
         raise HTTPException(status_code=400, detail=str(e))

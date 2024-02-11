@@ -394,14 +394,32 @@ def get_current_user_optional(
     if not token:
         return None
     logger.info(f"Attempting to get current user with token")
-    jwt_auth = JWTAuthentication(token)
-    user, _ = jwt_auth.authenticate_user_token()
-    if not user:
+
+    res = requests.get(
+        "https://clerk.kly.lol/oauth/userinfo",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    if res.status_code == 200:
+        user = res.json()
+        logger.info(f"Successfully retrieved current user with token", user)
+        return user
+    else:
         logger.error(f"Invalid authentication credentials")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    logger.info(f"Successfully retrieved current user with token")
-    return user
+
+    # jwt_auth = JWTAuthentication(token)
+    # user, _ = jwt_auth.authenticate_user_token()
+    # if not user:
+    #     logger.error(f"Invalid authentication credentials")
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Invalid authentication credentials",
+    #         headers={"WWW-Authenticate": "Bearer"},
+    #     )
+    # logger.info(f"Successfully retrieved current user with token")
+    # return user
