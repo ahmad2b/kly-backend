@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 class URL(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: Optional[int] = Field(default=None, index=True)
+    user_id: Optional[str] = Field(default=None, index=True)  # Change this line
 
     url: str = Field(nullable=False)
     short_url: str = Field(nullable=False, index=True, unique=True)
@@ -24,4 +24,4 @@ class URL(SQLModel, table=True):
 class URLCreate(SQLModel):
     url: str
     description: Optional[str] = None
-    user_id: Optional[int] = None
+    user_id: Optional[str] = None

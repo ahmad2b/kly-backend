@@ -19,7 +19,7 @@ logger = logger_config(__name__)
     tags=["URL"],
     response_model=URL,
     status_code=status.HTTP_201_CREATED,
-    description="Creates a new URL entry. If a description is not provided, the content of the URL will be used to generate a relevant alias. If a token is provided, it will be used as the user_id for the URL entry. If the URL already exists, or if the URL is invalid, an error will be returned.",
+    description="Creates a new URL entry. If a description is not provided, the content of the URL will be used to generate a relevant alias. If a token is provided, it will be used as the user_id for the URL entry. If the URL already exists, or if the URL is invalid, an error will be returned. The short URL created can be used like this: 'kly.lol/<short_url>'.",
     responses={
         400: {
             "content": {
@@ -66,9 +66,9 @@ async def create(
             )
             return service.create(db, updated_url)
 
-        logger.info(f"Token found. Creating URL with user_id: {token.user_id}")
+        logger.info(f"Token found. Creating URL with user_id: {token['user_id']}")
         updated_url = URLCreate(
-            url=url.url, description=url.description, user_id=token.get("user_id")
+            url=url.url, description=url.description, user_id=token["user_id"]
         )
         return service.create(db, updated_url)
     except Duplicate as e:
