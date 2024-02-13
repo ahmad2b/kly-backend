@@ -8,7 +8,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from api.config import settings
-from api.public.user.models import UserCreate, UserSignupResponse, UserCredentials
+
+# from api.public.user.models import UserCreate, UserSignupResponse, UserCredentials
 from api.utils.errors import (
     HTTPError,
     BadRequest,
@@ -85,7 +86,7 @@ class Clerk:
             )
         return jwks_data
 
-    def create_user(self, user: UserCreate) -> Optional[UserSignupResponse]:
+    def create_user(self, user):
         user_data = {
             "email_address": [f"{user.email_address}"],
             "username": f"{user.username}",
@@ -133,7 +134,7 @@ class Clerk:
             data = response.json()
             return data
 
-    def authenticate_user(self, user: UserCredentials) -> LoginResponse:
+    def authenticate_user(self, user) -> LoginResponse:
         logger.info(f"Attempting to authenticate user: {user.userIdentifier}")
 
         data = {

@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     DESCRIPTION: str = (
         "Kly.lol is a URL shortener service powered by Gemini with FastAPI and Next.js."
     )
-    VERSION: str = "0.1.0"
+    VERSION: str = "0.2.0"
     DATABASE_URI: str = (
         f"postgresql://{os.environ['DATABASE_USERNAME']}:{os.environ['DATABASE_PASSWORD']}@{os.environ['DATABASE_HOST']}/{os.environ['DATABASE_NAME']}?sslmode=require"
     )

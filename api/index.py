@@ -3,7 +3,7 @@ from starlette.responses import JSONResponse, RedirectResponse
 
 from api.public import api as public_api
 from api.utils.errors import NotFound
-from api.public.url import service
+from api.public.url import crud as service
 from api.config import settings
 from api.utils.logger import logger_config
 
@@ -39,7 +39,7 @@ app.include_router(public_api)
 
 # Redirect API
 @app.get(
-    "/api/{short_url}",
+    "/api/v2/{short_url}",
     response_class=RedirectResponse,
     status_code=status.HTTP_307_TEMPORARY_REDIRECT,
     tags=["Redirect"],
@@ -60,7 +60,8 @@ app.include_router(public_api)
 )
 async def redirect(short_url: str, db: Session = Depends(get_session)):
     try:
-        url = service.get_url(short_url, db=db)
+        url = service.get_url(db=db, short_url=short_url)
+
         if not url:
             raise NotFound(f"URL with short URL {short_url} not found")
         return RedirectResponse(url.url)

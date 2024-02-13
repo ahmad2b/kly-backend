@@ -10,33 +10,36 @@ logger = logger_config(__name__)
 
 
 def create(db: Annotated[Session, Depends(get_session)], url: URL) -> URL:
-    logger.info(f"Creating new URL. Details: {url}")
+    logger.info("Creating new URL", extra={"url": url.dict()})
     db.add(url)
     db.commit()
     db.refresh(url)
-    logger.info(f"URL created successfully. Short_url: {url.short_url}")
+    logger.info("URL created successfully", extra={"short_url": url.short_url})
     return url
 
 
 def get_url(
     db: Annotated[Session, Depends(get_session)], short_url: str
 ) -> Optional[URL]:
-    logger.info(f"Getting URL by short URL: {short_url}")
+    logger.info("Getting URL by short URL", extra={"short_url": short_url})
     db_url = db.exec(select(URL).where(URL.short_url == short_url)).first()
-    logger.info(f"URL found: {db_url}")
+    if db_url:
+        logger.info("URL found", extra={"url": db_url.dict()})
+    else:
+        logger.info("URL not found", extra={"short_url": short_url})
     return db_url
 
 
 def delete(
     db: Annotated[Session, Depends(get_session)], short_url: str
 ) -> Optional[URL]:
-    logger.info(f"Deleting URL by short URL: {short_url}")
+    logger.info("Deleting URL by short URL", extra={"short_url": short_url})
     db_url = db.exec(select(URL).where(URL.short_url == short_url)).first()
     if db_url:
         db.delete(db_url)
         db.commit()
-        logger.info(f"URL deleted: {db_url}")
+        logger.info("URL deleted", extra={"url": db_url.dict()})
         return db_url
     else:
-        logger.info(f"URL not found: {short_url}")
+        logger.info("URL not found", extra={"short_url": short_url})
         return None
