@@ -30,14 +30,16 @@ async def create(
     try:
         if not user:
             logger.info("Creating URL without user_id", extra={"url": url.url})
-            updated_url = URL(url=url.url, short_url=url.short_url, user_id=url.user_id)
+            updated_url = URL(
+                url=str(url.url), short_url=url.short_url, user_id=url.user_id
+            )
         else:
             logger.info(
                 "Creating URL with user_id",
                 extra={"user_id": user["user_id"], "url": url.url},
             )
             updated_url = URL(
-                url=url.url, short_url=url.short_url, user_id=user["user_id"]
+                url=str(url.url), short_url=url.short_url, user_id=user["user_id"]
             )
 
         return service.create(db, updated_url)
