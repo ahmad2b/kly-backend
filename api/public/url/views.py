@@ -51,6 +51,24 @@ async def create(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
+async def get(
+    db: Annotated[Session, Depends(get_session)],
+    user: Annotated[Any, Depends(get_current_user_optional)],
+) -> Any:
+    try:
+        if not user:
+            logger.info("Getting URLs without user_id")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="user_id is required"
+            )
+        else:
+            logger.info("Getting URLs with user_id", extra={"user_id": user["user_id"]})
+            return service.get(db, user_id=user["user_id"])
+    except Exception as e:
+        logger.error("Failed to retrieve URLs")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
 @router.get(
     "/{short_url}",
     tags=["URL"],
