@@ -51,6 +51,12 @@ async def create(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
+@router.get(
+    "",
+    tags=["URL"],
+    response_model=list[URL],
+    status_code=status.HTTP_200_OK,
+)
 async def get(
     db: Annotated[Session, Depends(get_session)],
     user: Annotated[Any, Depends(get_current_user_optional)],
